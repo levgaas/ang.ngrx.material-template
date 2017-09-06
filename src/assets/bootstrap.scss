@@ -1,0 +1,196 @@
+// backgrounds
+.background-white { background-color: white; }
+.background-transparent { background-color: transparent; }
+
+// positions
+.pos-rlt { position: relative; }
+.pos-stc { position: static; }
+.pos-abt { position: absolute; }
+.pos-fix { position: fixed; }
+.pos-abs-r-l-t {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.pos-abs-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+// visibility
+.show { visibility: visible; }
+.visibility-hidden { visibility: hidden; }
+.display-none { display: none; }
+.opacity-none { opacity: 0; }
+
+// text
+.text-medium { font-size: medium; }
+.text-u-c { text-transform: uppercase; }
+.text-l-t { text-decoration: line-through; }
+.text-u-l { text-decoration: underline; }
+.text-ellipsis {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// fonts
+.font-thin { font-weight: 300; }
+.font-normal { font-weight: normal; }
+.font-medium { font-weight: 500; }
+.font-bold { font-weight: 700; }
+.letter-spacing-default { letter-spacing: normal; }
+
+// transformations
+.rotate-180 { transform: rotate(180deg) }
+.h-full { height: 100%; }
+.w-full { width: 100%; }
+
+// user-actions / ui
+.no-select { user-select: none; }
+.initial-select { user-select: initial; }
+.cursor-pointer { cursor: pointer }
+.no-shadow { box-shadow: none; }
+.outline-n { outline: none; }
+.clear { clear: both; }
+
+// line-height
+.l-h-0x { line-height: 0; }
+.l-h-normal { line-height: normal; }
+.l-h-1x { line-height: 1.2; }
+.l-h-2x { line-height: 2em; }
+
+// scrolls
+.scroll-x, .scroll-y {
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-y { overflow-y: auto; }
+.scroll-x { overflow-x: auto; }
+
+// overflow
+.overflow-visible { overflow: visible; }
+.overflow-y-hidden { overflow-y: hidden; }
+.overflow-x-hidden { overflow-x: hidden; }
+.overflow-hidden { overflow: hidden; }
+
+$sides: (
+  t:      top,
+  r:      right,
+  b:      bottom,
+  l:      left,
+  empty:  empty
+);
+
+@mixin z-index() {
+  $class: z-index !default;
+  $i: 0;
+  @while ($i < 25) {
+    .#{$class}-#{$i} {
+      z-index: $i;
+    }
+    @if ($i < 3) {
+      $i: $i + 1;
+    } @else {
+      $i: $i + 5;
+    }
+  }
+}
+
+@mixin borders() {
+  $border-class: b !default;
+  @each $key, $value in $sides {
+    @if ($key != empty) {
+      .b-#{$key} {
+        border-#{$value}: 1px solid $border-color;
+      }
+    } @else {
+      .b {
+        border: 1px solid $border-color;
+      }
+    }
+  }
+  .b-none {
+    border: none;
+  }
+  .b-rounded {
+    border-radius: 50%;
+  }
+}
+
+@mixin wrappers() {
+  $wrapper-class: wrapper !default;
+  @for $i from 1 through 12 {
+    .#{$wrapper-class}-#{$i} {
+      padding: $i * 4;
+    }
+  }
+}
+
+@mixin paddings() {
+  $padder-class: padder !default;
+  @for $i from 1 through 4 {
+    .#{$padder-class}-#{$i} {
+      padding: $i + 8px;
+    }
+  }
+}
+
+@mixin indents($mixin-key, $mixin-value) {
+  @each $key, $value in $sides {
+    $i: 1;
+    @while ($i < 64) {
+      $class-name: "";
+      $prop-name: "";
+      $prop-value: "";
+      @if ($key != empty) {
+        $class-name: #{$mixin-key}-#{$key}-#{$i};
+        $prop-name: #{$mixin-value}-#{$value};
+        $prop-value: $i;
+      } @else {
+        $class-name: #{$mixin-key}-#{$i};
+        $prop-name: $mixin-value;
+        $prop-value: 0;
+      }
+
+      // positive
+      .#{$class-name} {
+        #{$prop-name}: #{$prop-value}px;
+      }
+      // negative
+      $class-name: #{$mixin-key}-#{$key}-n-#{$i};
+      .#{$class-name} {
+        #{$prop-name}: -#{$prop-value}px;
+      }
+
+      @if ($key != empty) {
+        .#{$mixin-key}-#{$key}-none {
+          #{$mixin-value}-#{$value}: 0;
+        }
+      }
+
+      @if ($i < 4) {
+        $i: $i + 1;
+      } @else if ($i < 16) {
+        $i: $i + 2;
+      } @else if ($i < 64) {
+        $i: $i + 4;
+      }
+    }
+  }
+  .#{$mixin-key}-none {
+    #{$mixin-value}: 0 !important;
+  }
+}
+
+@include wrappers();
+@include paddings();
+@include z-index();
+@include borders();
+@include indents(p, padding);
+@include indents(m, margin);
